@@ -1,0 +1,9 @@
+#!/bin/sh
+
+cat <<EOF
+This is a STI ruby-2.0 centos image:
+
+Sample invocation:
+
+sti build git://github.com/mfojtik/sinatra-app-example openshift/ruby-20-centos sinatra-app
+EOF
