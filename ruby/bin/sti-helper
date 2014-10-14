@@ -1,0 +1,10 @@
+#!/bin/bash -e
+
+if [ -z "$1" ]; then
+  echo "No command specified, exiting. For details see https://github.com/openshift/source-to-image."
+  exit 1
+fi
+
+tar -C /tmp -xf -
+
+exec /tmp/scripts/$1

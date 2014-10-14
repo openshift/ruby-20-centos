@@ -1,6 +1,6 @@
 #!/bin/bash -e
 #
-# Default STI assemble script for the 'centos-ruby' image.
+# Default STI assemble script for the 'ruby-20-centos' image.
 #
 
 if [ "$1" = "-h" ]; then
@@ -19,21 +19,19 @@ function rake_assets_precompile() {
   bundle exec rake assets:precompile
 }
 
-if [ -e /tmp/artifacts/gems.tgz ]; then
+if [ "$(ls /tmp/artifacts/ 2>/dev/null)" ]; then
   echo "Restoring build artifacts"
-  pushd ${HOME} >/dev/null
-  tar zxf /tmp/artifacts/gems.tgz
-  popd >/dev/null
+  mv /tmp/artifacts/* $HOME/.
 fi
 
-app_runtime_dir="${HOME}/src"
-app_src_dir="/tmp/src"
+APP_RUNTIME_DIR="${HOME}/src"
+APP_SRC_DIR="/tmp/src"
 
 echo "---> Installing application source"
-mkdir -p ${app_runtime_dir}
-cp -Rf ${app_src_dir}/* ${app_runtime_dir}/
+mkdir -p ${APP_RUNTIME_DIR}
+cp -Rf ${APP_SRC_DIR}/* ${APP_RUNTIME_DIR}/
 
-pushd "$app_runtime_dir/${APP_ROOT}" >/dev/null
+pushd "$APP_RUNTIME_DIR/${APP_ROOT}" >/dev/null
 echo "---> Building your Ruby application from source"
 
 if [ -f Gemfile ]; then
