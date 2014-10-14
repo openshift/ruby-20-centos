@@ -1,0 +1,13 @@
+#!/bin/sh
+
+cat <<EOF
+This is a STI ruby-2.0 centos base image:
+To use it, install STI: https://github.com/openshift/source-to-image
+
+Sample invocation:
+
+sti build git://github.com/mfojtik/sinatra-app-example openshift/ruby-20-centos sinatra-app
+
+You can then run the resulting image via:
+docker run sinatra-app
+EOF

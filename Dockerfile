@@ -7,19 +7,18 @@
 # can use 'centos-ruby-extended' image instead.
 #
 
-FROM       centos
-MAINTAINER Michal Fojtik <mfojtik@redhat.com>
+FROM       centos:centos7
 
 # Pull in important updates and then install ruby193
 #
-RUN  yum update -y --enablerepo=centosplus && \
-     yum install -y --enablerepo=centosplus \
-      gettext tar which ruby ruby-devel \
-      rubygem-bundler rubygem-rake \
-      gcc-c++ automake autoconf curl-devel openssl-devel \
-      zlib-devel libxslt-devel libxml2-devel \
-      mysql-libs mysql-devel postgresql-devel sqlite-devel && \
-     yum clean all -y
+RUN yum update -y --enablerepo=centosplus && \
+    yum install -y --enablerepo=centosplus \
+    gettext tar which ruby ruby-devel \
+    rubygem-bundler rubygem-rake \
+    gcc-c++ automake make autoconf curl-devel openssl-devel \
+    zlib-devel libxslt-devel libxml2-devel \
+    mysql-libs mysql-devel postgresql-devel sqlite-devel && \
+    yum clean all -y
 
 # Add configuration files, bashrc and other tweaks
 #
@@ -31,9 +30,9 @@ ENV STI_SCRIPTS_URL https://raw.githubusercontent.com/openshift/ruby-20-centos/m
 # Add support for '#!/usr/bin/ruby' shebang.
 #
 RUN mkdir -p /opt/ruby/{gems,run,src} && \
-      groupadd -r ruby -f -g 433 && \
-      useradd -u 431 -r -g ruby -d /opt/ruby -s /sbin/nologin -c "Ruby User" ruby && \
-      chown -R ruby:ruby /opt/ruby
+    groupadd -r ruby -f -g 433 && \
+    useradd -u 431 -r -g ruby -d /opt/ruby -s /sbin/nologin -c "Ruby User" ruby && \
+    chown -R ruby:ruby /opt/ruby
 
 # Install NodeJS
 RUN mkdir -p /opt/nodejs && \
@@ -54,10 +53,8 @@ ENV HOME     /opt/ruby
 ENV PATH     $HOME/bin:/opt/nodejs/bin:$PATH
 
 WORKDIR     /opt/ruby/src
-USER ruby
+USER        ruby
 
 EXPOSE 9292
 
-# Display STI usage when invoked outside STI builder
-#
-CMD ["/opt/ruby/bin/usage"]
+CMD ["/opt/ruby/bin/sti-helper"]
