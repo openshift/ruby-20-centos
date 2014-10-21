@@ -5,7 +5,7 @@ This repository contains the sources and
 [Dockerfile](https://github.com/openshift/ruby-20-centos/blob/master/Dockerfile)
 of the base image for deploying Ruby 2.0 applications as reproducible Docker
 images. The resulting images can be run either by [Docker](http://docker.io)
-or using [STI](https://github.com/openshift/sti).
+or using [STI](https://github.com/openshift/source-to-image).
 
 Installation
 ---------------
@@ -25,7 +25,7 @@ Repository organization
 
 * **`.sti/bin/`**
 
-  This folder contains scripts that are run by [STI](https://github.com/openshift/sti):
+  This folder contains scripts that are run by [STI](https://github.com/openshift/source-to-image):
 
   *   **assemble**
 
@@ -88,8 +88,8 @@ Usage
 
 **Building the [sinatra-app-example](https://github.com/mfojtik/sinatra-app-example) Ruby 2.0 application..**
 
-1. **using standalone [STI](https://github.com/openshift/sti) and running the resulting image by [Docker](http://docker.io):**
-    
+1. **using standalone [STI](https://github.com/openshift/source-to-image) and running the resulting image by [Docker](http://docker.io):**
+
     ```
 $ sti build git://github.com/mfojtik/sinatra-app-example openshift/ruby-20-centos sinatra-app
 $ docker run -p 9292:9292 sinatra-app
