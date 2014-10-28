@@ -7,7 +7,7 @@
 # can use 'centos-ruby-extended' image instead.
 #
 
-FROM       centos:centos7
+FROM centos:centos7
 
 # Pull in important updates and then install ruby193
 #
@@ -23,6 +23,7 @@ RUN yum install -y --enablerepo=centosplus epel-release \
 # Add configuration files, bashrc and other tweaks
 #
 ADD ./ruby /opt/ruby/
+ADD ./.sti/bin/usage /opt/ruby/bin/
 
 ENV STI_SCRIPTS_URL https://raw.githubusercontent.com/openshift/ruby-20-centos/master/.sti/bin
 
@@ -31,7 +32,7 @@ ENV STI_SCRIPTS_URL https://raw.githubusercontent.com/openshift/ruby-20-centos/m
 #
 RUN mkdir -p /opt/ruby/{gems,run,src} && \
     groupadd -r ruby -f -g 433 && \
-    useradd -u 431 -r -g ruby -d /opt/ruby -s /sbin/nologin -c "Ruby User" ruby && \
+    useradd -u 431 -r -g ruby -d /opt/ruby -s /sbin/nologin -c "Ruby user" ruby && \
     chown -R ruby:ruby /opt/ruby
 
 # Set the 'root' directory where this build will search for Gemfile and

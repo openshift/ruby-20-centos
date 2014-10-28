@@ -1,10 +1,11 @@
 #!/bin/bash -e
 
 if [ -z "$1" ]; then
-  echo "No command specified, exiting. For details see https://github.com/openshift/source-to-image."
-  exit 1
+  exec /opt/ruby/bin/usage
 fi
 
-tar -C /tmp -xf -
+if [ "$1" != "run" -a "$1" != "save-artifacts" ]; then
+  tar -C /tmp -xf -
+fi
 
 exec /tmp/scripts/$1
