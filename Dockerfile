@@ -11,12 +11,13 @@ FROM       centos:centos7
 
 # Pull in important updates and then install ruby193
 #
-RUN yum install -y --enablerepo=centosplus \
+RUN yum install -y --enablerepo=centosplus epel-release \
     gettext tar which ruby ruby-devel \
     rubygem-bundler rubygem-rake \
     gcc-c++ automake make autoconf curl-devel openssl-devel \
     zlib-devel libxslt-devel libxml2-devel \
     mysql-libs mysql-devel postgresql-devel sqlite-devel && \
+    yum install -y --enablerepo=centosplus nodejs && \
     yum clean all -y
 
 # Add configuration files, bashrc and other tweaks
@@ -33,11 +34,6 @@ RUN mkdir -p /opt/ruby/{gems,run,src} && \
     useradd -u 431 -r -g ruby -d /opt/ruby -s /sbin/nologin -c "Ruby User" ruby && \
     chown -R ruby:ruby /opt/ruby
 
-# Install NodeJS
-RUN mkdir -p /opt/nodejs && \
-    curl -L http://nodejs.org/dist/latest/node-v0.10.32-linux-x64.tar.gz | \
-    tar --strip-components 1 -xzf - -C /opt/nodejs
-
 # Set the 'root' directory where this build will search for Gemfile and
 # config.ru.
 #
@@ -49,7 +45,7 @@ RUN mkdir -p /opt/nodejs && \
 #
 ENV APP_ROOT .
 ENV HOME     /opt/ruby
-ENV PATH     $HOME/bin:/opt/nodejs/bin:$PATH
+ENV PATH     $HOME/bin:$PATH
 
 WORKDIR     /opt/ruby/src
 USER        ruby
