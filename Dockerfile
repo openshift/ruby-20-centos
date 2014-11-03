@@ -11,8 +11,7 @@ FROM       centos:centos7
 
 # Pull in important updates and then install ruby193
 #
-RUN yum update -y --enablerepo=centosplus && \
-    yum install -y --enablerepo=centosplus \
+RUN yum install -y --enablerepo=centosplus \
     gettext tar which ruby ruby-devel \
     rubygem-bundler rubygem-rake \
     gcc-c++ automake make autoconf curl-devel openssl-devel \
