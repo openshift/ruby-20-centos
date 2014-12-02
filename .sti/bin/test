@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-/opt/sti/bin/run &
+/tmp/scripts/run &
 
 MAX_ATTEMPTS=10
 SLEEP_TIME=1
