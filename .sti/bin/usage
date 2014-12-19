@@ -9,5 +9,5 @@ Sample invocation:
 sti build git://github.com/mfojtik/sinatra-app-example openshift/ruby-20-centos sinatra-app
 
 You can then run the resulting image via:
-docker run sinatra-app
+docker run -p 9292:9292 sinatra-app
 EOF
