@@ -76,6 +76,19 @@ check_result() {
   fi
 }
 
+wait_for_cid() {
+  local max_attempts=10
+  local sleep_time=1
+  local attempt=1
+  local result=1
+  while [ $attempt -le $max_attempts ]; do
+    [ -f $cid_file ] && break
+    echo "Waiting for container start..."
+    attempt=$(( $attempt + 1 ))
+    sleep $sleep_time
+  done
+}
+
 test_usage() {
   sti usage ${sti_args} ${IMAGE_NAME} &>/dev/null
 }
@@ -114,9 +127,8 @@ check_result $?
 # Verify that the HTTP connection can be established to test application container
 run_test_application &
 
-# TODO: Wait for the Docker container to run and docker write the container id
-#       file.
-sleep 2
+# Wait for the container to write it's CID file
+wait_for_cid
 
 test_connection
 check_result $?
