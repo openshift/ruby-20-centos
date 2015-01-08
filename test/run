@@ -28,6 +28,10 @@ container_exists() {
   image_exists $(cat $cid_file)
 }
 
+container_ip() {
+  docker inspect --format="{{ .NetworkSettings.IPAddress }}" $(cat $cid_file)
+}
+
 run_sti_build() {
   sti build ${sti_args} file://${test_dir}/test-app ${IMAGE_NAME} ${IMAGE_NAME}-testapp
 }
@@ -82,7 +86,8 @@ test_connection() {
   local attempt=1
   local result=1
   while [ $attempt -le $max_attempts ]; do
-    response_code=$(curl -s -w %{http_code} -o /dev/null http://localhost:${test_port}/)
+    echo "Sending GET request to http://$(container_ip):${test_port}/"
+    response_code=$(curl -s -w %{http_code} -o /dev/null http://$(container_ip):${test_port}/)
     status=$?
     if [ $status -eq 0 ]; then
       if [ $response_code -eq 200 ]; then
@@ -108,6 +113,11 @@ check_result $?
 
 # Verify that the HTTP connection can be established to test application container
 run_test_application &
+
+# TODO: Wait for the Docker container to run and docker write the container id
+#       file.
+sleep 2
+
 test_connection
 check_result $?
 
