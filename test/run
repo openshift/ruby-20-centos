@@ -52,7 +52,7 @@ prepare() {
 }
 
 run_test_application() {
-  docker run --rm --cidfile=${cid_file} -p ${test_port}:${test_port} ${IMAGE_NAME}-testapp
+  docker run --rm --cidfile=${cid_file} -p ${test_port} ${IMAGE_NAME}-testapp
 }
 
 cleanup() {
@@ -90,10 +90,12 @@ wait_for_cid() {
 }
 
 test_usage() {
+  echo "Testing 'sti usage'..."
   sti usage ${sti_args} ${IMAGE_NAME} &>/dev/null
 }
 
 test_connection() {
+  echo "Testing HTTP connection..."
   local max_attempts=10
   local sleep_time=1
   local attempt=1
