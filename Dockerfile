@@ -1,16 +1,14 @@
-# centos-ruby
+# ruby-20-centos
 #
 # This image provide a base for running Ruby based applications. It provides
 # just base Ruby installation using SCL and Ruby application server.
 #
 # If you want to use Bundler with C-extensioned gems or MySQL/PostGresql, you
 # can use 'centos-ruby-extended' image instead.
-#
 
 FROM centos:centos7
 
 # Pull in important updates and then install ruby193
-#
 RUN yum install -y --enablerepo=centosplus epel-release \
     gettext tar which ruby ruby-devel \
     rubygem-bundler rubygem-rake \
@@ -21,15 +19,16 @@ RUN yum install -y --enablerepo=centosplus epel-release \
     yum clean all -y
 
 # Add configuration files, bashrc and other tweaks
-#
 ADD ./ruby /opt/ruby/
 ADD ./.sti/bin/usage /opt/ruby/bin/
 
+# Default STI scripts url
 ENV STI_SCRIPTS_URL https://raw.githubusercontent.com/openshift/ruby-20-centos/master/.sti/bin
+# Default destination of scripts and sources, this is where assemble will look for them
+ENV STI_LOCATION /tmp
 
 # Create 'ruby' account we will use to run Ruby application
 # Add support for '#!/usr/bin/ruby' shebang.
-#
 RUN mkdir -p /opt/ruby/{gems,run,src} && \
     groupadd -r ruby -f -g 433 && \
     useradd -u 431 -r -g ruby -d /opt/ruby -s /sbin/nologin -c "Ruby user" ruby && \
@@ -43,7 +42,6 @@ RUN mkdir -p /opt/ruby/{gems,run,src} && \
 #
 # Use this in case when your application is contained in a subfolder of your
 # GIT repository. The default value is the root folder.
-#
 ENV APP_ROOT .
 ENV HOME     /opt/ruby
 ENV PATH     $HOME/bin:$PATH
@@ -53,4 +51,4 @@ USER        ruby
 
 EXPOSE 9292
 
-CMD ["/opt/ruby/bin/sti-helper"]
+CMD ["/opt/ruby/bin/usage"]
