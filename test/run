@@ -20,6 +20,10 @@ sti_args="--forcePull=false -s ${scripts_url}"
 # TODO: This should be part of the image metadata
 test_port=9292
 
+info() {
+  echo -e "\n\e[1m[INFO] $@...\e[0m\n"
+}
+
 image_exists() {
   docker inspect $1 &>/dev/null
 }
@@ -43,6 +47,7 @@ prepare() {
   fi
   # TODO: STI build require the application is a valid 'GIT' repository, we
   # should remove this restriction in the future when a file:// is used.
+  info "Build the test application image"
   pushd ${test_dir}/test-app >/dev/null
   git init
   git config user.email "build@localhost" && git config user.name "builder"
@@ -56,6 +61,7 @@ run_test_application() {
 }
 
 cleanup() {
+  info "Cleaning up the test application image"
   if [ -f $cid_file ]; then
     if container_exists; then
       docker stop $(cat $cid_file)
@@ -70,7 +76,7 @@ cleanup() {
 check_result() {
   local result="$1"
   if [[ "$result" != "0" ]]; then
-    echo "STI image '${IMAGE_NAME}' test FAILED (exit code: ${result})"
+    info "TEST FAILED (${result})"
     cleanup
     exit $result
   fi
@@ -81,27 +87,26 @@ wait_for_cid() {
   local sleep_time=1
   local attempt=1
   local result=1
+  info "Waiting for application container to start"
   while [ $attempt -le $max_attempts ]; do
     [ -f $cid_file ] && break
-    echo "Waiting for container start..."
     attempt=$(( $attempt + 1 ))
     sleep $sleep_time
   done
 }
 
 test_usage() {
-  echo "Testing 'sti usage'..."
+  info "Testing the 'sti usage' command"
   sti usage ${sti_args} ${IMAGE_NAME} &>/dev/null
 }
 
 test_connection() {
-  echo "Testing HTTP connection..."
+  info "Testing the HTTP connection (http://$(container_ip):${test_port})"
   local max_attempts=10
   local sleep_time=1
   local attempt=1
   local result=1
   while [ $attempt -le $max_attempts ]; do
-    echo "Sending GET request to http://$(container_ip):${test_port}/"
     response_code=$(curl -s -w %{http_code} -o /dev/null http://$(container_ip):${test_port}/)
     status=$?
     if [ $status -eq 0 ]; then
@@ -119,6 +124,8 @@ test_connection() {
 # Build the application image twice to ensure the 'save-artifacts' and
 # 'restore-artifacts' scripts are working properly
 prepare
+
+info "Testing STI incremental build"
 run_sti_build
 check_result $?
 
@@ -136,3 +143,5 @@ test_connection
 check_result $?
 
 cleanup
+
+info "All tests finished successfully."
