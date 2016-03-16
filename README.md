@@ -1,3 +1,5 @@
+THIS REPOSITORY IS DEPRECATED.  IF YOU ARE LOOKING FOR A RUBY IMAGE TO USE WITH OPENSHIFT, PLEASE SEE [THIS](https://github.com/openshift/sti-ruby) REPOSITORY INSTEAD.
+
 Ruby 2.0 - CentOS Docker image
 ========================================
 
